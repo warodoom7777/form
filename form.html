@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -27,32 +28,25 @@
   <script>
     async function main() {
       try {
-        // เริ่มต้น LIFF
         await liff.init({ liffId: "2007358630-JoajzGW6" });
 
-        // ตรวจสอบสถานะการ login
         if (!liff.isLoggedIn()) {
-          liff.login(); // ถ้ายังไม่ login ให้ทำการ login
+          liff.login();
           return;
         }
 
-        // ดึงข้อมูลโปรไฟล์ของผู้ใช้
         const profile = await liff.getProfile();
         const userId = profile.userId;
-
-        // แสดงฟอร์มแจ้งปัญหาหลังจาก login สำเร็จ
         document.getElementById("content").style.display = "block";
 
-        // ส่งข้อมูลฟอร์ม
         $("#problemForm").submit(function (e) {
-          e.preventDefault(); // ป้องกันไม่ให้ฟอร์มถูก submit แบบปกติ
+          e.preventDefault();
 
           const category = $("#category").val();
           const subject = $("#subject").val();
 
-          // ส่งข้อมูลไปยัง Google Apps Script
           $.ajax({
-            url: "https://script.google.com/macros/s/AKfycbzAVXlJ9K9W_Hb98l7Lqn83UfgGN706i99067YEbNk86ooGHw6x_mX__-ZuyMxKW48ejg/exec", // URL ของ Google Apps Script
+            url: "https://script.google.com/macros/s/AKfycbzAVXlJ9K9W_Hb98l7Lqn83UfgGN706i99067YEbNk86ooGHw6x_mX__-ZuyMxKW48ejg/exec",
             type: "POST",
             data: {
               userId: userId,
@@ -61,7 +55,7 @@
             },
             success: function () {
               alert("ข้อมูลถูกส่งเรียบร้อยแล้ว");
-              $("#problemForm")[0].reset(); // รีเซ็ตฟอร์ม
+              $("#problemForm")[0].reset();
             },
             error: function () {
               alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
@@ -74,7 +68,6 @@
       }
     }
 
-    // เรียกใช้งานฟังก์ชันเมื่อโหลดหน้าเสร็จ
     window.onload = main;
   </script>
 </body>
