@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ฟอร์มแจ้งปัญหา</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+  <div class="container mt-5" id="content" style="display:none;">
+    <h2>ฟอร์มแจ้งปัญหา</h2>
+    <form id="problemForm">
+      <div class="form-group">
+        <label for="category">หมวดหมู่:</label>
+        <input type="text" class="form-control" id="category" required />
+      </div>
+      <div class="form-group">
+        <label for="subject">หัวข้อ:</label>
+        <input type="text" class="form-control" id="subject" required />
+      </div>
+      <button type="submit" class="btn btn-primary">ส่งข้อมูล</button>
+    </form>
+  </div>
+
+  <script>
+    async function main() {
+      try {
+        await liff.init({ liffId: "2007358630-JoajzGW6" });
+
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        const profile = await liff.getProfile();
+        const userId = profile.userId;
+        document.getElementById("content").style.display = "block";
+
+        $("#problemForm").submit(function (e) {
+          e.preventDefault();
+
+          const category = $("#category").val();
+          const subject = $("#subject").val();
+
+          $.ajax({
+            url: "https://script.google.com/macros/s/AKfycbzAVXlJ9K9W_Hb98l7Lqn83UfgGN706i99067YEbNk86ooGHw6x_mX__-ZuyMxKW48ejg/exec",
+            type: "POST",
+            data: {
+              userId: userId,
+              category: category,
+              subject: subject,
+            },
+            success: function () {
+              alert("ข้อมูลถูกส่งเรียบร้อยแล้ว");
+              $("#problemForm")[0].reset();
+            },
+            error: function () {
+              alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+            },
+          });
+        });
+      } catch (err) {
+        alert("ไม่สามารถโหลด LIFF ได้: " + err.message);
+        console.error(err);
+      }
+    }
+
+    window.onload = main;
+  </script>
+</body>
+</html>
